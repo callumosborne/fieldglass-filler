@@ -1,47 +1,72 @@
-import re
-from mechanize import Browser
+from selenium import webdriver
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.firefox.options import Options
+import time
+import sys
 
-br = Browser()
+# Select False if you want to see the browser automatically fill the sheet in
+headless = True
 
+options = Options()
+options.headless = headless
+browser = webdriver.Firefox(options=options)
 
-br.set_handle_robots( False )
-br.addheaders = [('User-agent', 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.1) Gecko/2008071615 Fedora/3.0.1-1.fc9 Firefox/3.0.1')]
+# Open url
+browser.get("https://www.fieldglass.net/?next=%2Fworker_desktop.do")
 
-br.open("https://www.fieldglass.net/?next=%2Fworker_desktop.do")
+# Get login elements
+username = browser.find_element_by_id("usernameId_new")
+password = browser.find_element_by_id("passwordId_new")
+submit   = browser.find_element_by_name("action")
 
-br.select_form(name="loginForm")
-br["username"] = "callum.osborne"
-br["password"] = ":Tk9P/x[25W\\xh]Vc"
+with open ("login.txt", "r") as login_file:
+    username = login_file.readline()[:-2]
+    password = login_file.readline()
 
-response = br.submit()  # submit current form
+# Submit username and password
+username.send_keys(username)
+password.send_keys(password)
 
-# print(response.read().decode('UTF-8'))
+submit.click()
 
-response = br.follow_link(br.find_link(text="Complete Time Sheet"))
+wait = WebDriverWait( browser, 3 )
 
-br.select_form(name="timeSheetForm")
+available_timesheets = browser.find_elements_by_link_text("Complete Time Sheet")
 
+# If no availabale timesheets end program
+if len(available_timesheets) == 0:
+    print('No timesheets to fill in...')
+    sys.exit()
+    
+# Select first timesheet
+complete_timesheet = available_timesheets[0]
+complete_timesheet.click()
+
+# Fill in form
 for x in range(0, 5):
+
     cell_in  = "timein0" + str(x)
     cell_out = "timein" + str(x+30)
 
-    br[cell_in] = "09:00"
-    br[cell_out] = "17:00"
+    time_in = browser.find_element_by_name(cell_in)
+    time_out = browser.find_element_by_name(cell_out)
 
-    time_worked = "t_z12061520440238615056a6f_b_" + str(x + 1) + "_r1"
+    # Start at 9am and end at 5pm
+    time_in.send_keys('09:00')
+    time_out.send_keys('17:00')
 
-    br.find_control(id=time_worked).value = "8"
+    # Worked 8 hours standard time
+    cell_time_worked = "t_z12061520440238615056a6f_b_" + str(x + 1) + "_r1"
+    duration = browser.find_element_by_id(cell_time_worked)
+    duration.send_keys('8')
 
-# response = br.submit(id="fgTSSubmit")
+wait = WebDriverWait( browser, 3 )
 
-# br.select_form(name="formNavigationContainer")
+submit = browser.find_element_by_id("fgTSSubmit")
+submit.click()
 
-# response = br.find_control(id="fgTSSubmit").click()
+# Wait for the submit form to show up
+time.sleep(5)
 
-# br.form.action = "fgTSSubmit"
-
-response = br.submit(id="fgTSSubmit",nr=0)
-
-print(response)
-
-# print(response.read().decode('UTF-8'))
+update = browser.find_element_by_id('update')
+update.click()
