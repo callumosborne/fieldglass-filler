@@ -15,19 +15,19 @@ browser = webdriver.Firefox(options=options)
 browser.get("https://www.fieldglass.net/?next=%2Fworker_desktop.do")
 
 # Get login elements
-username = browser.find_element_by_id("usernameId_new")
-password = browser.find_element_by_id("passwordId_new")
-submit   = browser.find_element_by_name("action")
+username_element = browser.find_element_by_id("usernameId_new")
+password_element = browser.find_element_by_id("passwordId_new")
+submit_element   = browser.find_element_by_name("action")
 
 with open ("login.txt", "r") as login_file:
     username = login_file.readline()[:-2]
     password = login_file.readline()
 
 # Submit username and password
-username.send_keys(username)
-password.send_keys(password)
+username_element.send_keys(username)
+password_element.send_keys(password)
 
-submit.click()
+submit_element.click()
 
 wait = WebDriverWait( browser, 3 )
 
