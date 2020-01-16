@@ -23,7 +23,7 @@ brew install geckodriver
 pip install selenium
 ```
 
-Put your username and password into the login folder:
+Put your username and password into the login.txt file:
 * replace usernameHere with your username
 * replade passwordHere with your password
 
