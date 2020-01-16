@@ -5,7 +5,7 @@ It will automatcially fill in the fieldglass as working 8 standard hours a day f
 ## Within mac terminal:
 
 ```bash
-git clone https://github.com/callum-osborne/fieldglass-filler]
+git clone https://github.com/callum-osborne/fieldglass-filler
 ```
 
 ```bash
