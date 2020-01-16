@@ -1,2 +1,2 @@
-username-here
-password-here
+usernameHere
+passwordHere
