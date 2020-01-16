@@ -20,7 +20,7 @@ password_element = browser.find_element_by_id("passwordId_new")
 submit_element   = browser.find_element_by_name("action")
 
 with open ("login.txt", "r") as login_file:
-    username = login_file.readline()[:-2]
+    username = login_file.readline()[:-1]
     password = login_file.readline()
 
 # Submit username and password
