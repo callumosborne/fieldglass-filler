@@ -37,6 +37,7 @@ available_timesheets = browser.find_elements_by_link_text("Complete Time Sheet")
 if len(available_timesheets) == 0:
     print('No timesheets to fill in...')
     print('-- This can also be caused by an incorrect username or password.')
+    print('-- To check you can set headless to False and watch where the bot fails.')
     sys.exit()
     
 # Select first timesheet
