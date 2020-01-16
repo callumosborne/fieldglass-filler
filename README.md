@@ -12,6 +12,7 @@ git clone https://github.com/callum-osborne/fieldglass-filler
 cd fieldglass-filler
 ```
 
+Install this Mac OS package, it allows python to control the browser.
 ```bash
 brew install geckodriver
 ```
