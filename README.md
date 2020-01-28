@@ -2,7 +2,7 @@
 
 It will automatcially fill in the fieldglass as working 8 standard hours a day for 5 days a week, 9am until 5pm. It will then submit it for approval.
 
-### Within mac terminal:
+### Within a Mac or Linux terminal:
 
 ```bash
 git clone https://github.com/callum-osborne/fieldglass-filler
