@@ -14,7 +14,7 @@ cd fieldglass-filler
 
 Install this package, it allows python to create its own browser. 
 
-Mac OS package:
+For Mac OS:
 ```bash
 brew install geckodriver
 ```
