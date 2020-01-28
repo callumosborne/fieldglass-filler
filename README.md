@@ -31,8 +31,8 @@ pip install selenium
 ```
 
 Put your username and password into the login.txt file:
-* replace usernameHere with your username
-* replade passwordHere with your password
+* Replace usernameHere with your username
+* Replade passwordHere with your password
 
 ### Run the python script:
 If you run into an error with an import run python3...
