@@ -4,6 +4,14 @@ from selenium.webdriver.firefox.options import Options
 import time
 import sys
 
+"""
+Exit codes:
+0: Success
+1: Incorrect Login
+2: No Timesheets to fill in
+3: Timesheet unsuccessfully filled in
+"""
+
 class Fieldglass:
 
     def __init__(self):
@@ -109,14 +117,14 @@ timesheet = fieldglass.get_available_ts()[0]
 
 print('Filling in timehseet...')
 
-# fieldglass.fill_timesheet(timesheet)
+fieldglass.fill_timesheet(timesheet)
 
 # To check the there is 1 less timesheet to fill in
 test_fieldglass = Fieldglass()
 test_fieldglass.login()
 if current_no_ts == len(test_fieldglass.get_available_ts()):
     print('\nUnsuccessfull, please login to check why.\n')
-    sys.exit(10)
+    sys.exit(3)
 else:
     print('\nSuccessfully submitted timesheet.\n')
     sys.exit(0)
