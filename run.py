@@ -128,8 +128,3 @@ if current_no_ts == len(test_fieldglass.get_available_ts()):
 else:
     print('\nSuccessfully submitted timesheet.\n')
     sys.exit(0)
-
-
-
-
-
