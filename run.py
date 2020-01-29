@@ -88,43 +88,47 @@ class Fieldglass:
         update = self.browser.find_element_by_id('update')
         update.click()
 
-print('\nFieldglass Filler')
-print('-----------------\n')
+def main():
 
-print('Logging in...')
+    print('\nFieldglass Filler')
+    print('-----------------\n')
 
-fieldglass = Fieldglass()
+    print('Logging in...')
 
-fieldglass.login()
+    fieldglass = Fieldglass()
 
-if fieldglass.incorrect_login():
-    print('\nIncorrect login.\n')
-    sys.exit(1)
+    fieldglass.login()
 
-print('Logged in successfully.')
+    if fieldglass.incorrect_login():
+        print('\nIncorrect login.\n')
+        sys.exit(1)
 
-current_no_ts = len(fieldglass.get_available_ts())
+    print('Logged in successfully.')
 
-# If no availabale timesheets end program
-if current_no_ts == 0:
-    print('\nNo timesheets to fill in.\n')
-    sys.exit(2)
+    current_no_ts = len(fieldglass.get_available_ts())
 
-print(str(current_no_ts) + ' timesheet(s) to fill in.' )
-    
-# Select first timesheet
-timesheet = fieldglass.get_available_ts()[0]
+    # If no availabale timesheets end program
+    if current_no_ts == 0:
+        print('\nNo timesheets to fill in.\n')
+        sys.exit(2)
 
-print('Filling in timehseet...')
+    print(str(current_no_ts) + ' timesheet(s) to fill in.' )
+        
+    # Select first timesheet
+    timesheet = fieldglass.get_available_ts()[0]
 
-fieldglass.fill_timesheet(timesheet)
+    print('Filling in timehseet...')
 
-# To check the there is 1 less timesheet to fill in
-test_fieldglass = Fieldglass()
-test_fieldglass.login()
-if current_no_ts == len(test_fieldglass.get_available_ts()):
-    print('\nUnsuccessfull, please login to check why.\n')
-    sys.exit(3)
-else:
-    print('\nSuccessfully submitted timesheet.\n')
-    sys.exit(0)
+    fieldglass.fill_timesheet(timesheet)
+
+    # To check the there is 1 less timesheet to fill in
+    test_fieldglass = Fieldglass()
+    test_fieldglass.login()
+    if current_no_ts == len(test_fieldglass.get_available_ts()):
+        print('\nUnsuccessfull, please login to check why.\n')
+        sys.exit(3)
+    else:
+        print('\nSuccessfully submitted timesheet.\n')
+        sys.exit(0)
+
+main()
