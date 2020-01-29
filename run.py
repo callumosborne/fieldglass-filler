@@ -3,6 +3,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.firefox.options import Options
 import time
 import sys
+import os
 
 """
 Exit codes:
@@ -11,6 +12,8 @@ Exit codes:
 2: No Timesheets to fill in
 3: Timesheet unsuccessfully filled in
 """
+
+LOGIN_FILE = os.path.join(sys.path[0], "login.txt")
 
 class Fieldglass:
 
@@ -33,7 +36,9 @@ class Fieldglass:
         password_element = self.browser.find_element_by_id("passwordId_new")
         submit_element   = self.browser.find_element_by_name("action")
 
-        with open ("login.txt", "r") as login_file:
+        os.path.join(sys.path[0], "login.txt")
+
+        with open (LOGIN_FILE, "r") as login_file:
             username = login_file.readline()[:-1]
             password = login_file.readline()
 
