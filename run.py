@@ -3,36 +3,40 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.firefox.options import Options
 import time
 import sys
+import os
 
-# Select False if you want to see the browser automatically fill the sheet in
-headless = True
+"""
+Exit codes:
+0: Success
+1: Incorrect Login
+2: No Timesheets to fill in
+3: Timesheet unsuccessfully filled in
+"""
 
-options = Options()
-options.headless = headless
-browser = webdriver.Firefox(options=options)
+LOGIN_FILE = os.path.join(sys.path[0], "login.txt")
 
-# Open url
-browser.get("https://www.fieldglass.net/?next=%2Fworker_desktop.do")
+class Fieldglass:
 
-# Get login elements
-username_element = browser.find_element_by_id("usernameId_new")
-password_element = browser.find_element_by_id("passwordId_new")
-submit_element   = browser.find_element_by_name("action")
+    def __init__(self):
 
-with open ("login.txt", "r") as login_file:
-    username = login_file.readline()[:-1]
-    password = login_file.readline()
+        # Select False if you want to see the browser automatically fill the sheet in
+        headless = True
 
-# Submit username and password
-username_element.send_keys(username)
-password_element.send_keys(password)
+        options = Options()
+        options.headless = headless
+        self.browser = webdriver.Firefox(options=options)
 
-submit_element.click()
+        # Open url
+        self.browser.get("https://www.fieldglass.net/?next=%2Fworker_desktop.do")
 
-wait = WebDriverWait( browser, 3 )
+    def login(self):
 
-available_timesheets = browser.find_elements_by_link_text("Complete Time Sheet")
+        # Get login elements
+        username_element = self.browser.find_element_by_id("usernameId_new")
+        password_element = self.browser.find_element_by_id("passwordId_new")
+        submit_element   = self.browser.find_element_by_name("action")
 
+<<<<<<< HEAD
 # If no availabale timesheets end program
 if len(available_timesheets) == 0:
     print('No timesheets to fill in...')
@@ -43,32 +47,106 @@ if len(available_timesheets) == 0:
 # Select first timesheet
 complete_timesheet = available_timesheets[0]
 complete_timesheet.click()
+=======
+        os.path.join(sys.path[0], "login.txt")
+>>>>>>> df7b91eba1c411cb0d244b33fcaabb2f40b363e7
 
-# Fill in form
-for x in range(0, 5):
+        with open (LOGIN_FILE, "r") as login_file:
+            username = login_file.readline()[:-1]
+            password = login_file.readline()
 
-    cell_in  = "timein0" + str(x)
-    cell_out = "timein" + str(x+30)
+        # Submit username and password
+        username_element.send_keys(username)
+        password_element.send_keys(password)
 
-    time_in = browser.find_element_by_name(cell_in)
-    time_out = browser.find_element_by_name(cell_out)
+        submit_element.click()
 
-    # Start at 9am and end at 5pm
-    time_in.send_keys('09:00')
-    time_out.send_keys('17:00')
+        time.sleep(3)
 
-    # Worked 8 hours standard time
-    cell_time_worked = "t_z12061520440238615056a6f_b_" + str(x + 1) + "_r1"
-    duration = browser.find_element_by_id(cell_time_worked)
-    duration.send_keys('8')
+    def incorrect_login(self):
+        errors = self.browser.find_elements_by_class_name("globalError")
+        if len(errors) != 0:
+            return True
+        return False
 
-wait = WebDriverWait( browser, 3 )
+    def get_available_ts(self):
 
-submit = browser.find_element_by_id("fgTSSubmit")
-submit.click()
+        return self.browser.find_elements_by_link_text("Complete Time Sheet")
 
-# Wait for the submit form to show up
-time.sleep(5)
+    def fill_timesheet(self, timesheet):
 
-update = browser.find_element_by_id('update')
-update.click()
+        timesheet.click()
+
+        # Fill in form
+        for x in range(0, 5):
+
+            cell_in  = "timein0" + str(x)
+            cell_out = "timein" + str(x+30)
+
+            time_in = self.browser.find_element_by_name(cell_in)
+            time_out = self.browser.find_element_by_name(cell_out)
+
+            # Start at 9am and end at 5pm
+            time_in.send_keys('09:00')
+            time_out.send_keys('17:00')
+
+            # Worked 8 hours standard time
+            cell_time_worked = "t_z12061520440238615056a6f_b_" + str(x + 1) + "_r1"
+            duration = self.browser.find_element_by_id(cell_time_worked)
+            duration.send_keys('8')
+        
+        time.sleep(2)
+
+        submit = self.browser.find_element_by_id("fgTSSubmit")
+        submit.click()
+
+        # Wait for the submit form to show up
+        time.sleep(5)
+
+        update = self.browser.find_element_by_id('update')
+        update.click()
+
+def main():
+
+    print('\nFieldglass Filler')
+    print('-----------------\n')
+
+    print('Logging in...')
+
+    fieldglass = Fieldglass()
+
+    fieldglass.login()
+
+    if fieldglass.incorrect_login():
+        print('\nIncorrect login.\n')
+        sys.exit(1)
+
+    print('Logged in successfully.')
+
+    current_no_ts = len(fieldglass.get_available_ts())
+
+    # If no availabale timesheets end program
+    if current_no_ts == 0:
+        print('\nNo timesheets to fill in.\n')
+        sys.exit(2)
+
+    print(str(current_no_ts) + ' timesheet(s) to fill in.' )
+        
+    # Select first timesheet
+    timesheet = fieldglass.get_available_ts()[0]
+
+    print('Filling in timehseet...')
+
+    fieldglass.fill_timesheet(timesheet)
+
+    # To check the there is 1 less timesheet to fill in
+    test_fieldglass = Fieldglass()
+    test_fieldglass.login()
+    if current_no_ts == len(test_fieldglass.get_available_ts()):
+        print('\nUnsuccessfull, please login to check why.\n')
+        sys.exit(3)
+    else:
+        print('\nSuccessfully submitted timesheet.\n')
+        sys.exit(0)
+
+main()
