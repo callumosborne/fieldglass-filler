@@ -36,21 +36,6 @@ class Fieldglass:
         password_element = self.browser.find_element_by_id("passwordId_new")
         submit_element   = self.browser.find_element_by_name("action")
 
-<<<<<<< HEAD
-# If no availabale timesheets end program
-if len(available_timesheets) == 0:
-    print('No timesheets to fill in...')
-    print('-- This can also be caused by an incorrect username or password.')
-    print('-- To check you can set headless to False and watch where the bot fails.')
-    sys.exit()
-    
-# Select first timesheet
-complete_timesheet = available_timesheets[0]
-complete_timesheet.click()
-=======
-        os.path.join(sys.path[0], "login.txt")
->>>>>>> df7b91eba1c411cb0d244b33fcaabb2f40b363e7
-
         with open (LOGIN_FILE, "r") as login_file:
             username = login_file.readline()[:-1]
             password = login_file.readline()
